@@ -2,7 +2,7 @@
 
 <hr>
 
-如果这个项目帮到了你，请点亮“Follow”与“Star:star:”
+如果这个项目帮到了你，请点亮“Follow”与“Star”
 
 <hr>
 
@@ -17,16 +17,6 @@
 
 
 ### 二、设计方案
-
-#### 1、设计框图
-
-![image-20230803231502908](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803231502908.png)
-
-
-
-
-
-#### 2、原理说明
 
 ##### （1）整体设计
 
@@ -397,23 +387,17 @@ finalver.asm				//汇编代码文件
 
 ##### （1）最短路径算法的运算
 
-![image-20230803235622402](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803235622402.png)
-
 根据上图，可以看见六个点到源点的距离已经被正确地记录到了DataMemory的相应位置上，十进制分别为：0, 8, 3, 5, 10, 8，符合正确结果。
 
 
 
 ##### （2）将内存中的值求和并写入寄存器$t9内
 
-![image-20230803235847050](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803235847050.png)
-
 由上图可知，各点的最短路径之和$0+8+3+5+10+8=34=(22)_{\mathbb{hex}}$，已经正确地写入到了指定的\$25(\$t9)寄存器中。
 
 
 
 ##### （3）将此值按位间隔一定时间写入BCD外设
-
-![image-20230804000014558](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804000014558.png)
 
 如上图所示，观察BCD的数值，在15b-25b-43f-83f之间周期轮换，这与我设计的四位轮流显示的正确结果是一致的，最终在板子上运行的结果也验证了这一点。 
 
@@ -425,23 +409,17 @@ finalver.asm				//汇编代码文件
 
 ##### （1）转发模块生成转发信号
 
-![image-20230804004652307](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804004652307.png)
-
 上图部分对应执行到Loop2/Loop3/Loop4嵌条对应的代码部分，可以看到这里由于有Load-use冲突和RAW冲突，需要进行数据的转发来保证计算结果的正确性，并注意到图中对应的ForwardA和ForwardB控制信号能正确生成并控制数据的选择，最终得到正确的结果。
 
 
 
 ##### （2）冒险解决模块生成
 
-![image-20230804004757771](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804004757771.png)
-
 上图中的PC_MUX / IF_ID_MUX / ID_EX_MUX分别对应三个寄存器前端的选择器，能根据程序要求选择正常进行、阻塞、清除等，由图可见它们也能根据代码需要生成正确的控制信号。
 
 
 
 ##### （3）跳转与分支的正确实现
-
-![image-20230804004556587](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804004556587.png)
 
 上图中的EX_Branch信号是EX阶段中由ALU计算得到的控制信号，表明需要分支；ID_Jump信号是在ID阶段解码出的控制信号，表明需要跳转。结合PC_i和PC_o可见这两个信号也能正确的生成并执行。
 
@@ -455,25 +433,15 @@ finalver.asm				//汇编代码文件
 
 #### 1、面积占用
 
-![image-20230803234448483](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803234448483.png)
-
-![image-20230803234514890](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803234514890.png)
 
 该五级流水线CPU的资源占用情况如上图所示，资源占用率是比较低的。下图为之前写的单周期CPU的资源占用情况，可见相比之下，流水线CPU所占用的资源要远少于单周期CPU，尤其是在IO资源的占用上。
 
-![image-20230603230437116](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230603230437116.png)
 
 
 
 
 
 #### 2、时序性能
-
-![image-20230803234222323](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803234222323.png)
-
-![image-20230803234911039](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803234911039.png)
-
-![image-20230803234920022](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803234920022.png)
 
 上面三张图展示的是时钟最高频率逼近的过程。一开始将时钟频率设置为20MHz，如图一所示，每周期有24.45ns的余量，故逐渐提高时钟周期，并根据WNS进一步调整。当调整时钟频率为95MHz后，WNS为负数，说明接近极限了。这时我更改代码，对各模块进行优化后，结果如图三所示，故可计算得到，最高时钟频率约为：
 
@@ -483,22 +451,12 @@ f_{\mathbf{Max}}=\frac{1}{{\frac1{95MHz}}-0.346ns}=99.11\mathbf{MHz}
 $$
 关键路径如下，集中在ID_EX和EX_MEM：
 
-![image-20230804204912721](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804204912721.png)
-
-![image-20230804204946845](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804204946845.png)
-
-![image-20230804205010816](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804205010816.png)
-
 在MARS中运行软件程序，总指令数：
-
-![image-20230804120137492](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230804120137492.png)
 
 根据时钟频率为100MHz的行为级仿真结果所示，运行到该步结束大致需要1194.300ns，也就是需要使用的周期数为：
 $$
 N=\frac{1194.300×10^{-9}}{\frac1{100×10^6}}=5971.5
 $$
-![image-20230805140222251](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230805140222251.png)
-
 故该五级流水线CPU在执行这段程序时的CPI大致为：
 $$
 CPI=\frac{5971.5}{4652}=1.2836
@@ -522,11 +480,6 @@ $$
 ③ 确保数码管能正确显示后，将两端程序拼接后重新综合并上传到板子上，最终能正常执行，如下图所示：
 
 （注：一开始由于时钟周期过短，尽管行为级仿真能得到正确结果，但实际上部分指令执行结果出错，上板子后数码管数据显示状况不理想 ，如下面第一张图所示会有重影的问题。 经过时钟分频降低时钟频率后，最终运行结果非常良好，如下第二张图片所示）
-
-![image-20230805130846491](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230805130846491.png)
-
-![image-20230803235404114](C:\Users\asus\AppData\Roaming\Typora\typora-user-images\image-20230803235404114.png)
-
 
 
 
